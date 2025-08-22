@@ -9,6 +9,6 @@ JSON file, and prepares a commit with non-breaking fixes.
 ## Usage
 
 ```bash
-pip install -r requirements.txt
+pip install .
 python security_agent.py
 ```
