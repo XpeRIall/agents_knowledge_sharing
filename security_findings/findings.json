@@ -64,7 +64,7 @@
   ],
   "bandit": {
     "errors": [],
-    "generated_at": "2025-08-22T04:24:01Z",
+    "generated_at": "2025-08-22T04:27:36Z",
     "metrics": {
       "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py": {
         "CONFIDENCE.HIGH": 16,
