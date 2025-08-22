@@ -87,7 +87,16 @@ def main() -> None:
         for req in req_files
         for line in open(req).read().splitlines()
         if line.strip() and not line.startswith("#")
-    }
+    packages = set()
+    for req in req_files:
+        try:
+            with open(req) as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith("#"):
+                        packages.add(line.split("==")[0].split(">=")[0])
+        except (OSError, IOError) as e:
+            print(f"Warning: Could not read {req}: {e}")
     custom_results = {pkg: query_custom_api(pkg) for pkg in packages}
 
     findings = {
