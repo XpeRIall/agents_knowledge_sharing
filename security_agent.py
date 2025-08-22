@@ -29,7 +29,15 @@ def pip_audit(requirement_file: str) -> Dict:
         check=False,
     )
     if result.stdout:
-        return json.loads(result.stdout)
+    if result.returncode != 0:
+        # Optionally log the error, e.g. print(result.stderr)
+        return {}
+    if result.stdout:
+        try:
+            return json.loads(result.stdout)
+        except json.JSONDecodeError:
+            # Optionally log the error, e.g. print("Failed to parse pip-audit output as JSON")
+            return {}
     return {}
 
 
