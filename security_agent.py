@@ -440,15 +440,113 @@ def _create_git_branch_and_commit(pr_content: Dict[str, Any]) -> Dict[str, Any]:
             if result.returncode != 0:
                 return {"error": f"Failed to {desc}: {result.stderr}"}
         
+        # Now create the actual PR on GitHub
+        pr_result = _create_github_pr(branch_name, pr_content)
+        
+        if "error" in pr_result:
+            return {
+                "branch_name": branch_name,
+                "commit_message": pr_content["commit_message"],
+                "pr_title": pr_content["pr_title"],
+                "pr_description": pr_content["pr_description"],
+                "warning": pr_result["error"],
+                "next_steps": f"Branch created successfully. Create PR manually or install GitHub CLI: gh pr create --title \"{pr_content['pr_title']}\" --body \"{pr_content['pr_description']}\""
+            }
+        
         return {
             "branch_name": branch_name,
             "commit_message": pr_content["commit_message"],
             "pr_title": pr_content["pr_title"],
             "pr_description": pr_content["pr_description"],
-            "next_steps": f"Use GitHub CLI: gh pr create --title \"{pr_content['pr_title']}\" --body \"{pr_content['pr_description']}\""
+            "pr_url": pr_result.get("pr_url"),
+            "pr_number": pr_result.get("pr_number"),
+            "status": "PR created successfully!"
         }
     except Exception as e:
         return {"error": f"Git operations failed: {str(e)}"}
+
+
+def _create_github_pr(branch_name: str, pr_content: Dict[str, Any]) -> Dict[str, Any]:
+    """Create GitHub PR using GitHub API."""
+    try:
+        # Extract repository info
+        repo_info = _get_github_repo_info()
+        if "error" in repo_info:
+            return repo_info
+        
+        # Get GitHub token
+        import os
+        github_token = os.getenv("GITHUB_TOKEN")
+        if not github_token:
+            return {"error": "GITHUB_TOKEN environment variable not set. Set it with: export GITHUB_TOKEN=your_token"}
+        
+        # Create PR via API
+        return _make_github_api_request(repo_info, branch_name, pr_content, github_token)
+        
+    except Exception as e:
+        return {"error": f"Failed to create GitHub PR: {str(e)}"}
+
+
+def _get_github_repo_info() -> Dict[str, Any]:
+    """Extract GitHub repository owner and name from git remote."""
+    result = _run(["git", "remote", "get-url", "origin"])
+    if result.returncode != 0:
+        return {"error": "Could not get git remote URL"}
+    
+    remote_url = result.stdout.strip()
+    
+    if "github.com" not in remote_url:
+        return {"error": "Not a GitHub repository"}
+    
+    # Handle both SSH and HTTPS URLs
+    if remote_url.startswith("git@github.com:"):
+        repo_part = remote_url.replace("git@github.com:", "").replace(".git", "")
+    elif remote_url.startswith("https://github.com/"):
+        repo_part = remote_url.replace("https://github.com/", "").replace(".git", "")
+    else:
+        return {"error": "Unknown GitHub URL format"}
+    
+    if "/" not in repo_part:
+        return {"error": "Could not parse owner/repo from URL"}
+    
+    owner, repo = repo_part.split("/", 1)
+    return {"owner": owner, "repo": repo}
+
+
+def _make_github_api_request(repo_info: Dict[str, Any], branch_name: str, pr_content: Dict[str, Any], token: str) -> Dict[str, Any]:
+    """Make the actual GitHub API request to create PR."""
+    pr_data = {
+        "title": pr_content["pr_title"],
+        "body": pr_content["pr_description"],
+        "head": branch_name,
+        "base": "main"
+    }
+    
+    headers = {
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github.v3+json",
+        "User-Agent": "SecurityAgent/1.0"
+    }
+    
+    import requests
+    api_url = f"https://api.github.com/repos/{repo_info['owner']}/{repo_info['repo']}/pulls"
+    response = requests.post(api_url, json=pr_data, headers=headers, timeout=30)
+    
+    if response.status_code == 201:
+        pr_info = response.json()
+        return {
+            "pr_url": pr_info["html_url"],
+            "pr_number": pr_info["number"]
+        }
+    else:
+        error_msg = f"GitHub API error {response.status_code}"
+        if response.text:
+            try:
+                error_data = response.json()
+                error_msg += f": {error_data.get('message', 'Unknown error')}"
+            except json.JSONDecodeError:
+                error_msg += f": {response.text[:200]}"
+        return {"error": error_msg}
 
 
 async def _run_pr_agent_async(agent, prompt):
