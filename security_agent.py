@@ -339,25 +339,51 @@ async def _run_file_fix_agent_async(agent, prompt):
 
 def create_security_pr(findings_path: str) -> Dict[str, Any]:
     """Create a pull request with security fixes using agent-generated content."""
+    print("🚀 Starting PR creation process...")
+    
     try:
         if Agent is None:
-            return {"error": "Agent framework not available for PR creation"}
+            error_msg = "Agent framework not available for PR creation"
+            print(f"❌ {error_msg}")
+            return {"error": error_msg}
         
+        print("📊 Reading findings and git status...")
         # Read findings and get git status
         findings_data = _read_findings_and_git_status(findings_path)
         if "error" in findings_data:
+            print(f"❌ Failed to read findings: {findings_data['error']}")
             return findings_data
         
+        print(f"✅ Found {findings_data['dependency_count']} dependency + {findings_data['bandit_count']} code issues")
+        
+        print("🤖 Generating PR content with AI...")
         # Generate PR content using agent
         pr_content = _generate_pr_content_with_agent(findings_data)
         if "error" in pr_content:
+            print(f"❌ Failed to generate PR content: {pr_content['error']}")
             return pr_content
         
+        print(f"✅ Generated PR: '{pr_content['pr_title']}'")
+        
+        print("🌿 Creating git branch and commit...")
         # Create branch and commit
-        return _create_git_branch_and_commit(pr_content)
+        result = _create_git_branch_and_commit(pr_content)
+        
+        if "error" in result:
+            print(f"❌ Git operation failed: {result['error']}")
+        elif "pr_url" in result:
+            print(f"🎉 SUCCESS! PR created: {result['pr_url']}")
+        elif "warning" in result:
+            print(f"⚠️  Branch created but PR creation failed: {result['warning']}")
+        else:
+            print("✅ Branch created and pushed successfully")
+            
+        return result
         
     except Exception as e:
-        return {"error": f"Failed to create PR: {str(e)}"}
+        error_msg = f"Failed to create PR: {str(e)}"
+        print(f"❌ {error_msg}")
+        return {"error": error_msg}
 
 
 def _read_findings_and_git_status(findings_path: str) -> Dict[str, Any]:
@@ -652,7 +678,7 @@ async def _wrap_create_pr(_ctx, args: Any):
     import asyncio
     return await asyncio.to_thread(create_security_pr, findings_path)
 
-def run_with_agent(project_root: str, output_path: str) -> Dict[str, Any]:
+def run_with_agent(project_root: str, output_path: str, create_pr: bool = False) -> Dict[str, Any]:
     if Agent is None or Runner is None or FunctionTool is None:
         raise RuntimeError("openai-agents not available; run without --use-agent")
 
@@ -709,10 +735,29 @@ def run_with_agent(project_root: str, output_path: str) -> Dict[str, Any]:
         },
     )
 
+    # Conditional tools and instructions based on create_pr flag
+    if create_pr:
+        tools = [run_pipeline_tool, apply_fixes_tool, apply_bandit_fixes_tool, create_pr_tool]
+        instructions = """You are a security automation agent. Your task is to:
+1. First call run_audit_pipeline(project_root=PROJECT_ROOT, output_path=OUTPUT_PATH) to scan for vulnerabilities
+2. If vulnerabilities are found, call apply_security_fixes(findings_path=OUTPUT_PATH) to fix dependency issues
+3. Call apply_bandit_fixes(findings_path=OUTPUT_PATH) to fix code security issues  
+4. IMPORTANT: Always call create_security_pr(findings_path=OUTPUT_PATH) to create a GitHub pull request with all the fixes
+
+Make sure to execute ALL steps including PR creation."""
+    else:
+        tools = [run_pipeline_tool, apply_fixes_tool, apply_bandit_fixes_tool]
+        instructions = """You are a security automation agent. Your task is to:
+1. First call run_audit_pipeline(project_root=PROJECT_ROOT, output_path=OUTPUT_PATH) to scan for vulnerabilities
+2. If vulnerabilities are found, call apply_security_fixes(findings_path=OUTPUT_PATH) to fix dependency issues
+3. Call apply_bandit_fixes(findings_path=OUTPUT_PATH) to fix code security issues
+
+Do NOT create any pull requests."""
+
     agent = Agent(
         name="security-agent",
-        tools=[run_pipeline_tool, apply_fixes_tool, apply_bandit_fixes_tool, create_pr_tool],
-        instructions="First call run_audit_pipeline(project_root=PROJECT_ROOT, output_path=OUTPUT_PATH) to audit, then if vulnerabilities are found, call apply_security_fixes(findings_path=OUTPUT_PATH) to fix dependency issues, call apply_bandit_fixes(findings_path=OUTPUT_PATH) to fix code security issues, and finally call create_security_pr(findings_path=OUTPUT_PATH) to create a pull request with the fixes.",
+        tools=tools,
+        instructions=instructions,
     )
 
     prompt = json.dumps({"PROJECT_ROOT": project_root, "OUTPUT_PATH": output_path})
@@ -739,14 +784,12 @@ def main() -> None:
     project_root = str(Path(args.project_path).resolve())
     output_path = str(Path(args.output).resolve())
 
+    res = run_with_agent(project_root, output_path, create_pr=args.create_pr)
+    
     if args.create_pr:
-        # Enhanced mode with PR creation
-        res = run_with_agent(project_root, output_path)
-        print("Agent run completed with PR creation.")
+        print("Agent run completed with PR creation enabled.")
     else:
-        # Original mode without PR creation
-        res = run_with_agent(project_root, output_path)
-        print("Agent run completed.")
+        print("Agent run completed (no PR creation).")
     
     print("=" * 50)
     print(res["result"])

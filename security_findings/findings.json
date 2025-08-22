@@ -9,97 +9,23 @@
         "dependencies": [
           {
             "name": "django",
-            "version": "1.11.29",
-            "vulns": [
-              {
-                "id": "PYSEC-2021-98",
-                "fix_versions": [
-                  "2.2.24",
-                  "3.1.12",
-                  "3.2.4"
-                ],
-                "aliases": [
-                  "GHSA-68w8-qjq3-2gfm",
-                  "CVE-2021-33203"
-                ],
-                "description": "Django before 2.2.24, 3.x before 3.1.12, and 3.2.x before 3.2.4 has a potential directory traversal via django.contrib.admindocs. Staff members could use the TemplateDetailView view to check the existence of arbitrary files. Additionally, if (and only if) the default admindocs templates have been customized by application developers to also show file contents, then not only the existence but also the file contents would have been exposed. In other words, there is directory traversal outside of the template root directories."
-              },
-              {
-                "id": "GHSA-8x94-hmjh-97hq",
-                "fix_versions": [
-                  "3.2.15",
-                  "4.0.7"
-                ],
-                "aliases": [
-                  "CVE-2022-36359"
-                ],
-                "description": "An issue was discovered in the HTTP FileResponse class in Django 3.2 before 3.2.15 and 4.0 before 4.0.7. An application is vulnerable to a reflected file download (RFD) attack that sets the Content-Disposition header of a FileResponse when the filename is derived from user-supplied input."
-              },
-              {
-                "id": "GHSA-rrqc-c2jx-6jgv",
-                "fix_versions": [
-                  "4.2.16",
-                  "5.0.9",
-                  "5.1.1"
-                ],
-                "aliases": [
-                  "CVE-2024-45231"
-                ],
-                "description": "An issue was discovered in Django v5.1.1, v5.0.9, and v4.2.16. The django.contrib.auth.forms.PasswordResetForm class, when used in a view implementing password reset flows, allows remote attackers to enumerate user e-mail addresses by sending password reset requests and observing the outcome (only when e-mail sending is consistently failing)."
-              },
-              {
-                "id": "GHSA-7xr5-9hcq-chf9",
-                "fix_versions": [
-                  "4.2.22",
-                  "5.1.10",
-                  "5.2.2"
-                ],
-                "aliases": [
-                  "CVE-2025-48432"
-                ],
-                "description": "An issue was discovered in Django 5.2 before 5.2.2, 5.1 before 5.1.10, and 4.2 before 4.2.22. Internal HTTP response logging does not escape request.path, which allows remote attackers to potentially manipulate log output via crafted URLs. This may lead to log injection or forgery when logs are viewed in terminals or processed by external systems."
-              }
-            ]
+            "version": "5.2.5",
+            "vulns": []
           },
           {
             "name": "flask",
-            "version": "0.12",
-            "vulns": [
-              {
-                "id": "PYSEC-2019-179",
-                "fix_versions": [
-                  "1.0"
-                ],
-                "aliases": [
-                  "GHSA-5wv5-4vpf-pj6m",
-                  "CVE-2019-1010083"
-                ],
-                "description": "The Pallets Project Flask before 1.0 is affected by: unexpected memory usage. The impact is: denial of service. The attack vector is: crafted encoded JSON data. The fixed version is: 1. NOTE: this may overlap CVE-2018-1000656."
-              },
-              {
-                "id": "PYSEC-2018-66",
-                "fix_versions": [
-                  "0.12.3"
-                ],
-                "aliases": [
-                  "GHSA-562c-5r94-xh97",
-                  "CVE-2018-1000656"
-                ],
-                "description": "The Pallets Project flask version Before 0.12.3 contains a CWE-20: Improper Input Validation vulnerability in flask that can result in Large amount of memory usage possibly leading to denial of service. This attack appear to be exploitable via Attacker provides JSON data in incorrect encoding. This vulnerability appears to have been fixed in 0.12.3. NOTE: this may overlap CVE-2019-1010083."
-              },
-              {
-                "id": "PYSEC-2023-62",
-                "fix_versions": [
-                  "2.2.5",
-                  "2.3.2"
-                ],
-                "aliases": [
-                  "GHSA-m2qf-hxjv-5gpq",
-                  "CVE-2023-30861"
-                ],
-                "description": "Flask is a lightweight WSGI web application framework. When all of the following conditions are met, a response containing data intended for one client may be cached and subsequently sent by the proxy to other clients. If the proxy also caches `Set-Cookie` headers, it may send one client's `session` cookie to other clients. The severity depends on the application's use of the session and the proxy's behavior regarding cookies. The risk depends on all these conditions being met.  1. The application must be hosted behind a caching proxy that does not strip cookies or ignore responses with cookies. 2. The application sets `session.permanent = True` 3. The application does not access or modify the session at any point during a request. 4. `SESSION_REFRESH_EACH_REQUEST` enabled (the default). 5. The application does not set a `Cache-Control` header to indicate that a page is private or should not be cached.  This happens because vulnerable versions of Flask only set the `Vary: Cookie` header when the session is accessed or modified, not when it is refreshed (re-sent to update the expiration) without being accessed or modified. This issue has been fixed in versions 2.3.2 and 2.2.5."
-              }
-            ]
+            "version": "3.1.2",
+            "vulns": []
+          },
+          {
+            "name": "asgiref",
+            "version": "3.9.1",
+            "vulns": []
+          },
+          {
+            "name": "blinker",
+            "version": "1.9.0",
+            "vulns": []
           },
           {
             "name": "click",
@@ -122,13 +48,13 @@
             "vulns": []
           },
           {
-            "name": "werkzeug",
-            "version": "3.1.3",
+            "name": "sqlparse",
+            "version": "0.5.3",
             "vulns": []
           },
           {
-            "name": "pytz",
-            "version": "2025.2",
+            "name": "werkzeug",
+            "version": "3.1.3",
             "vulns": []
           }
         ],
@@ -138,7 +64,7 @@
   ],
   "bandit": {
     "errors": [],
-    "generated_at": "2025-08-22T03:58:45Z",
+    "generated_at": "2025-08-22T04:32:55Z",
     "metrics": {
       "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py": {
         "CONFIDENCE.HIGH": 16,
@@ -611,63 +537,6 @@
     ]
   },
   "osv": {
-    "results": [
-      {
-        "package": "django",
-        "version": "1.11.29",
-        "vulnerabilities": [
-          {
-            "id": "GHSA-68w8-qjq3-2gfm",
-            "modified": "2024-09-20T15:46:52.557962Z"
-          },
-          {
-            "id": "GHSA-7xr5-9hcq-chf9",
-            "modified": "2025-06-10T20:12:40.998043Z"
-          },
-          {
-            "id": "GHSA-8x94-hmjh-97hq",
-            "modified": "2025-01-14T11:27:04.205746Z"
-          },
-          {
-            "id": "GHSA-rrqc-c2jx-6jgv",
-            "modified": "2024-10-30T19:23:59.139649Z"
-          },
-          {
-            "id": "PYSEC-2021-98",
-            "modified": "2023-12-06T01:01:16.755410Z"
-          }
-        ]
-      },
-      {
-        "package": "flask",
-        "version": "0.12",
-        "vulnerabilities": [
-          {
-            "id": "GHSA-562c-5r94-xh97",
-            "modified": "2025-02-21T05:29:40.872529Z"
-          },
-          {
-            "id": "GHSA-5wv5-4vpf-pj6m",
-            "modified": "2024-09-20T21:24:25.140560Z"
-          },
-          {
-            "id": "GHSA-m2qf-hxjv-5gpq",
-            "modified": "2025-02-21T05:42:17.337040Z"
-          },
-          {
-            "id": "PYSEC-2018-66",
-            "modified": "2023-11-08T03:59:39.887416Z"
-          },
-          {
-            "id": "PYSEC-2019-179",
-            "modified": "2023-11-08T04:00:40.602062Z"
-          },
-          {
-            "id": "PYSEC-2023-62",
-            "modified": "2023-11-08T04:12:28.231927Z"
-          }
-        ]
-      }
-    ]
+    "results": []
   }
 }
