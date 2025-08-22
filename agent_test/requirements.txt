@@ -1,3 +1,3 @@
 # requirements.txt (intentionally vulnerable versions for testing)
-Django==1.11.29          # End-of-life, multiple CVEs
-Flask==0.12              # CVE-2018-1000656
+django>=2.2.24
+flask>=0.12.3
