@@ -50,7 +50,15 @@ def bandit_scan(path: str = ".") -> Dict:
         check=False,
     )
     if result.stdout:
-        return json.loads(result.stdout)
+    if result.returncode != 0:
+        print(f"Bandit scan failed with return code {result.returncode}. stderr: {result.stderr}")
+        return {}
+    if result.stdout:
+        try:
+            return json.loads(result.stdout)
+        except json.JSONDecodeError as e:
+            print(f"Failed to parse Bandit JSON output: {e}")
+            return {}
     return {}
 
 
