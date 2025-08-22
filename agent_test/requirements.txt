@@ -1,10 +1,3 @@
 # requirements.txt (intentionally vulnerable versions for testing)
 Django==1.11.29          # End-of-life, multiple CVEs
 Flask==0.12              # CVE-2018-1000656
-requests==2.19.1         # CVE-2018-18074
-urllib3==1.24.1          # CVE-2019-11324
-lxml==4.6.2              # CVE-2021-43818, CVE-2021-43819
-Pillow==6.2.1            # CVE-2020-35653, CVE-2020-35654
-pyyaml==5.3.1            # CVE-2020-1747
-Jinja2==2.10.1           # CVE-2019-10906
-MarkupSafe==1.1.0        # CVE-2019-10906

@@ -17,8 +17,9 @@ from agents.tool import FunctionTool
 OSV_QUERY_URL = "https://api.osv.dev/v1/query"
 OSV_BATCH_URL = "https://api.osv.dev/v1/querybatch"
 
-os.environ["OPENAI_LOG"] = "debug"                # OpenAI client debug logs
-os.environ["AGENTS_LOG_LEVEL"] = "debug"
+# Optional debug
+os.environ["OPENAI_LOG"] = os.environ.get("OPENAI_LOG", "debug")
+os.environ["AGENTS_LOG_LEVEL"] = os.environ.get("AGENTS_LOG_LEVEL", "debug")
 
 # ----------------------------
 # OSV helpers
@@ -33,7 +34,6 @@ def _normalize_osv_vuln(v: Dict[str, Any]) -> Dict[str, Any]:
             sc = s.get("score")
             if t or sc:
                 severities.append({"type": t, "score": sc})
-
     return {
         "id": v.get("id"),
         "modified": v.get("modified"),
@@ -64,12 +64,10 @@ def query_osv(package: str, version: Optional[str] = None) -> Dict[str, Any]:
                 "error": ("Package not installed; provide a version "
                           "to query OSV accurately (e.g., version='1.2.3')."),
             }
-
     payload = {
         "package": {"ecosystem": "PyPI", "name": package},
         "version": resolved_version,
     }
-
     try:
         resp = requests.post(OSV_QUERY_URL, json=payload, timeout=15)
         resp.raise_for_status()
@@ -88,15 +86,12 @@ def query_osv(package: str, version: Optional[str] = None) -> Dict[str, Any]:
 def pip_audit(requirement_file: Optional[str] = None) -> Dict[str, Any]:
     """
     Run pip-audit. If requirement_file is provided, audit that file.
-    Otherwise, audit the current environment.
+    (Environment scan disabled via wrapper to keep runs deterministic.)
     """
     cmd: List[str] = ["pip-audit", "-f", "json"]
     if requirement_file:
         cmd += ["-r", requirement_file]
-
     result = subprocess.run(cmd, capture_output=True, text=True, check=False)
-
-    # pip-audit may return non-zero even when it prints JSON (findings). Try to parse anyway.
     try:
         if result.stdout and result.stdout.strip():
             return json.loads(result.stdout)
@@ -130,7 +125,6 @@ def find_dependency_files(root: str = ".") -> Dict[str, List[str]]:
     found: List[str] = []
     for pat in patterns:
         found.extend(glob.glob(os.path.join(root, pat), recursive=True))
-    # Deduplicate & normalize paths
     norm = sorted({str(Path(p).resolve()) for p in found})
     return {"files": norm}
 
@@ -145,12 +139,9 @@ def commit_changes(message: str = "Apply security fixes") -> Dict[str, Any]:
     return {"returncode": commit.returncode, "stdout": commit.stdout, "stderr": commit.stderr}
 
 # ----------------------------
-# Adapter wrappers for FunctionTool
-#   Your agents version calls on_invoke_tool(ctx, args)
+# Tool wrappers (async) + arg coercion
 # ----------------------------
 
-def _wrap_find_dependency_files(_ctx, args: Dict[str, Any]):
-    return find_dependency_files(args.get("root", "."))
 def _coerce_args(args: Any) -> Dict[str, Any]:
     """Accept dict or JSON string; return a dict."""
     if isinstance(args, dict):
@@ -162,12 +153,8 @@ def _coerce_args(args: Any) -> Dict[str, Any]:
         try:
             return json.loads(s)
         except Exception:
-            # As a last resort, treat it as a single unnamed value
             return {"__raw": s}
-    # handle None / other types
     return {}
-
-# Keep _coerce_args as-is, then make all wrappers async:
 
 async def _wrap_find_dependency_files(_ctx, args: Any):
     a = _coerce_args(args)
@@ -177,7 +164,7 @@ async def _wrap_pip_audit(_ctx, args: Any):
     a = _coerce_args(args)
     req = a.get("requirement_file")
     if not req:
-        return {"error": "requirement_file is mandatory"}
+        return {"error": "requirement_file is mandatory; environment scans are disabled"}
     out = await asyncio.to_thread(pip_audit, req)
     print("DEBUG pip_audit for", req, "->", json.dumps(out)[:800], "...")
     return out
@@ -188,7 +175,6 @@ async def _wrap_bandit_scan(_ctx, args: Any):
 
 async def _wrap_query_osv(_ctx, args: Any):
     a = _coerce_args(args)
-    # requests.post is blocking → offload
     return await asyncio.to_thread(query_osv, a["package"], a.get("version"))
 
 async def _wrap_apply_non_breaking_fixes(_ctx, args: Any):
@@ -203,7 +189,6 @@ async def _wrap_apply_non_breaking_fixes(_ctx, args: Any):
 async def _wrap_commit_changes(_ctx, args: Any):
     a = _coerce_args(args)
     return await asyncio.to_thread(commit_changes, a.get("message", "Apply security fixes"))
-
 
 # ----------------------------
 # Main
@@ -310,39 +295,39 @@ def main() -> None:
         name="security-agent",
         tools=[find_files_tool, pip_audit_tool, bandit_tool, query_osv_tool, apply_fixes_tool, commit_tool],
         instructions=f"""
-            You are a security auditor for Python codebases.
+You are a security auditor for Python codebases.
 
-            You MUST:
+You MUST:
 
-            1) Call `find_dependency_files(root=PROJECT_ROOT)` to list dependency manifests.
-            Use ONLY the returned absolute paths; do not invent paths.
+1) Call `find_dependency_files(root=PROJECT_ROOT)` to list dependency manifests.
+   Use ONLY the returned absolute paths; do not invent paths.
 
-            2) For EACH file path ending with 'requirements*.txt', call:
-            `pip_audit(requirement_file=<that exact absolute path>)`.
-            Do not skip or summarize before running.
-            If no such files are found, you may skip pip-audit.
+2) For EACH file path ending with 'requirements*.txt', call:
+   `pip_audit(requirement_file=<that exact absolute path>)`.
+   Do not skip or summarize before running.
+   If no such files are found, you may skip pip-audit.
 
-            3) Run `bandit_scan(path=PROJECT_ROOT)` once to check the codebase.
+3) Run `bandit_scan(path=PROJECT_ROOT)` once to check the codebase.
 
-            4) For EVERY vulnerable package reported by pip-audit, call:
-            `query_osv(package=..., version=...)` to enrich with OSV data.
+4) For EVERY vulnerable package reported by pip-audit, call:
+   `query_osv(package=..., version=...)` to enrich with OSV data.
 
-            5) Consolidate all results into a single JSON object with keys:
-            {{
-                "manifests": ...,
-                "pip_audit": ...,
-                "bandit": ...,
-                "osv": ...
-            }}
+5) Consolidate all results into a single JSON object with keys:
+{{
+  "manifests": ...,
+  "pip_audit": ...,
+  "bandit": ...,
+  "osv": ...
+}}
 
-            6) Write the consolidated JSON object to '{args.output}'.
+6) Write the consolidated JSON object to '{args.output}'.
 
-            7) Optionally, call `apply_non_breaking_fixes(security_violations_json=...)` with the consolidated JSON,
-            then `commit_changes(message=...)` to commit the changes.
+7) Optionally, call `apply_non_breaking_fixes(security_violations_json=...)` with the consolidated JSON,
+   then `commit_changes(message=...)` to commit the changes.
 
-            8) Finally, return the output path and a brief summary of what was found.
+8) Finally, return the output path and a brief summary of what was found.
 
-            ⚠️ Do not invent results — always use the tool outputs directly.
+⚠️ Do not invent results — always use the tool outputs directly.
         """,
     )
 
