@@ -1,0 +1,673 @@
+{
+  "manifests": [
+    "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/requirements.txt"
+  ],
+  "pip_audit": [
+    {
+      "file": "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/requirements.txt",
+      "report": {
+        "dependencies": [
+          {
+            "name": "django",
+            "version": "1.11.29",
+            "vulns": [
+              {
+                "id": "PYSEC-2021-98",
+                "fix_versions": [
+                  "2.2.24",
+                  "3.1.12",
+                  "3.2.4"
+                ],
+                "aliases": [
+                  "GHSA-68w8-qjq3-2gfm",
+                  "CVE-2021-33203"
+                ],
+                "description": "Django before 2.2.24, 3.x before 3.1.12, and 3.2.x before 3.2.4 has a potential directory traversal via django.contrib.admindocs. Staff members could use the TemplateDetailView view to check the existence of arbitrary files. Additionally, if (and only if) the default admindocs templates have been customized by application developers to also show file contents, then not only the existence but also the file contents would have been exposed. In other words, there is directory traversal outside of the template root directories."
+              },
+              {
+                "id": "GHSA-8x94-hmjh-97hq",
+                "fix_versions": [
+                  "3.2.15",
+                  "4.0.7"
+                ],
+                "aliases": [
+                  "CVE-2022-36359"
+                ],
+                "description": "An issue was discovered in the HTTP FileResponse class in Django 3.2 before 3.2.15 and 4.0 before 4.0.7. An application is vulnerable to a reflected file download (RFD) attack that sets the Content-Disposition header of a FileResponse when the filename is derived from user-supplied input."
+              },
+              {
+                "id": "GHSA-rrqc-c2jx-6jgv",
+                "fix_versions": [
+                  "4.2.16",
+                  "5.0.9",
+                  "5.1.1"
+                ],
+                "aliases": [
+                  "CVE-2024-45231"
+                ],
+                "description": "An issue was discovered in Django v5.1.1, v5.0.9, and v4.2.16. The django.contrib.auth.forms.PasswordResetForm class, when used in a view implementing password reset flows, allows remote attackers to enumerate user e-mail addresses by sending password reset requests and observing the outcome (only when e-mail sending is consistently failing)."
+              },
+              {
+                "id": "GHSA-7xr5-9hcq-chf9",
+                "fix_versions": [
+                  "4.2.22",
+                  "5.1.10",
+                  "5.2.2"
+                ],
+                "aliases": [
+                  "CVE-2025-48432"
+                ],
+                "description": "An issue was discovered in Django 5.2 before 5.2.2, 5.1 before 5.1.10, and 4.2 before 4.2.22. Internal HTTP response logging does not escape request.path, which allows remote attackers to potentially manipulate log output via crafted URLs. This may lead to log injection or forgery when logs are viewed in terminals or processed by external systems."
+              }
+            ]
+          },
+          {
+            "name": "flask",
+            "version": "0.12",
+            "vulns": [
+              {
+                "id": "PYSEC-2019-179",
+                "fix_versions": [
+                  "1.0"
+                ],
+                "aliases": [
+                  "GHSA-5wv5-4vpf-pj6m",
+                  "CVE-2019-1010083"
+                ],
+                "description": "The Pallets Project Flask before 1.0 is affected by: unexpected memory usage. The impact is: denial of service. The attack vector is: crafted encoded JSON data. The fixed version is: 1. NOTE: this may overlap CVE-2018-1000656."
+              },
+              {
+                "id": "PYSEC-2018-66",
+                "fix_versions": [
+                  "0.12.3"
+                ],
+                "aliases": [
+                  "GHSA-562c-5r94-xh97",
+                  "CVE-2018-1000656"
+                ],
+                "description": "The Pallets Project flask version Before 0.12.3 contains a CWE-20: Improper Input Validation vulnerability in flask that can result in Large amount of memory usage possibly leading to denial of service. This attack appear to be exploitable via Attacker provides JSON data in incorrect encoding. This vulnerability appears to have been fixed in 0.12.3. NOTE: this may overlap CVE-2019-1010083."
+              },
+              {
+                "id": "PYSEC-2023-62",
+                "fix_versions": [
+                  "2.2.5",
+                  "2.3.2"
+                ],
+                "aliases": [
+                  "GHSA-m2qf-hxjv-5gpq",
+                  "CVE-2023-30861"
+                ],
+                "description": "Flask is a lightweight WSGI web application framework. When all of the following conditions are met, a response containing data intended for one client may be cached and subsequently sent by the proxy to other clients. If the proxy also caches `Set-Cookie` headers, it may send one client's `session` cookie to other clients. The severity depends on the application's use of the session and the proxy's behavior regarding cookies. The risk depends on all these conditions being met.  1. The application must be hosted behind a caching proxy that does not strip cookies or ignore responses with cookies. 2. The application sets `session.permanent = True` 3. The application does not access or modify the session at any point during a request. 4. `SESSION_REFRESH_EACH_REQUEST` enabled (the default). 5. The application does not set a `Cache-Control` header to indicate that a page is private or should not be cached.  This happens because vulnerable versions of Flask only set the `Vary: Cookie` header when the session is accessed or modified, not when it is refreshed (re-sent to update the expiration) without being accessed or modified. This issue has been fixed in versions 2.3.2 and 2.2.5."
+              }
+            ]
+          },
+          {
+            "name": "click",
+            "version": "8.2.1",
+            "vulns": []
+          },
+          {
+            "name": "itsdangerous",
+            "version": "2.2.0",
+            "vulns": []
+          },
+          {
+            "name": "jinja2",
+            "version": "3.1.6",
+            "vulns": []
+          },
+          {
+            "name": "markupsafe",
+            "version": "3.0.2",
+            "vulns": []
+          },
+          {
+            "name": "werkzeug",
+            "version": "3.1.3",
+            "vulns": []
+          },
+          {
+            "name": "pytz",
+            "version": "2025.2",
+            "vulns": []
+          }
+        ],
+        "fixes": []
+      }
+    }
+  ],
+  "bandit": {
+    "errors": [],
+    "generated_at": "2025-08-22T03:58:45Z",
+    "metrics": {
+      "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py": {
+        "CONFIDENCE.HIGH": 16,
+        "CONFIDENCE.LOW": 1,
+        "CONFIDENCE.MEDIUM": 5,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 10,
+        "SEVERITY.LOW": 5,
+        "SEVERITY.MEDIUM": 7,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 58,
+        "nosec": 0,
+        "skipped_tests": 0
+      },
+      "_totals": {
+        "CONFIDENCE.HIGH": 16,
+        "CONFIDENCE.LOW": 1,
+        "CONFIDENCE.MEDIUM": 5,
+        "CONFIDENCE.UNDEFINED": 0,
+        "SEVERITY.HIGH": 10,
+        "SEVERITY.LOW": 5,
+        "SEVERITY.MEDIUM": 7,
+        "SEVERITY.UNDEFINED": 0,
+        "loc": 58,
+        "nosec": 0,
+        "skipped_tests": 0
+      }
+    },
+    "results": [
+      {
+        "code": "4 import os\n5 import subprocess\n6 import hashlib\n",
+        "col_offset": 0,
+        "end_col_offset": 17,
+        "filename": "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Consider possible security implications associated with the subprocess module.",
+        "line_number": 5,
+        "line_range": [
+          5
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_imports.html#b404-import-subprocess",
+        "test_id": "B404",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "6 import hashlib\n7 import pickle\n8 import base64\n",
+        "col_offset": 0,
+        "end_col_offset": 13,
+        "filename": "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 502,
+          "link": "https://cwe.mitre.org/data/definitions/502.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Consider possible security implications associated with pickle module.",
+        "line_number": 7,
+        "line_range": [
+          7
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_imports.html#b403-import-pickle",
+        "test_id": "B403",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "10 import tempfile\n11 import telnetlib\n12 import requests\n",
+        "col_offset": 0,
+        "end_col_offset": 16,
+        "filename": "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 319,
+          "link": "https://cwe.mitre.org/data/definitions/319.html"
+        },
+        "issue_severity": "HIGH",
+        "issue_text": "A telnet-related module is being imported.  Telnet is considered insecure. Use SSH or some other encrypted protocol.",
+        "line_number": 11,
+        "line_range": [
+          11
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_imports.html#b401-import-telnetlib",
+        "test_id": "B401",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "17 # Hardcoded secrets (B105, B106, B107)\n18 DB_PASSWORD = \"P@ssw0rd!\"                         # B105\n19 AWS_ACCESS_KEY_ID = \"AKIAEXAMPLE1234567890\"       # B106\n",
+        "col_offset": 14,
+        "end_col_offset": 25,
+        "filename": "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 259,
+          "link": "https://cwe.mitre.org/data/definitions/259.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Possible hardcoded password: 'P@ssw0rd!'",
+        "line_number": 18,
+        "line_range": [
+          18
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b105_hardcoded_password_string.html",
+        "test_id": "B105",
+        "test_name": "hardcoded_password_string"
+      },
+      {
+        "code": "19 AWS_ACCESS_KEY_ID = \"AKIAEXAMPLE1234567890\"       # B106\n20 AWS_SECRET_ACCESS_KEY = \"wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY\"  # B107\n21 \n",
+        "col_offset": 24,
+        "end_col_offset": 66,
+        "filename": "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 259,
+          "link": "https://cwe.mitre.org/data/definitions/259.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Possible hardcoded password: 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'",
+        "line_number": 20,
+        "line_range": [
+          20
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b105_hardcoded_password_string.html",
+        "test_id": "B105",
+        "test_name": "hardcoded_password_string"
+      },
+      {
+        "code": "24     # Weak crypto (B303)\n25     return hashlib.md5(password.encode()).hexdigest()  # B303\n26 \n",
+        "col_offset": 11,
+        "end_col_offset": 41,
+        "filename": "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 327,
+          "link": "https://cwe.mitre.org/data/definitions/327.html"
+        },
+        "issue_severity": "HIGH",
+        "issue_text": "Use of weak MD5 hash for security. Consider usedforsecurity=False",
+        "line_number": 25,
+        "line_range": [
+          25
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+        "test_id": "B324",
+        "test_name": "hashlib"
+      },
+      {
+        "code": "29     # Weak crypto (B303)\n30     return hashlib.sha1(data).hexdigest()  # B303\n31 \n",
+        "col_offset": 11,
+        "end_col_offset": 29,
+        "filename": "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 327,
+          "link": "https://cwe.mitre.org/data/definitions/327.html"
+        },
+        "issue_severity": "HIGH",
+        "issue_text": "Use of weak SHA1 hash for security. Consider usedforsecurity=False",
+        "line_number": 30,
+        "line_range": [
+          30
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b324_hashlib.html",
+        "test_id": "B324",
+        "test_name": "hashlib"
+      },
+      {
+        "code": "34     # Insecure randomness for security tokens (B311)\n35     return \"\".join(str(random.random()) for _ in range(5))  # B311\n36 \n",
+        "col_offset": 23,
+        "end_col_offset": 38,
+        "filename": "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 330,
+          "link": "https://cwe.mitre.org/data/definitions/330.html"
+        },
+        "issue_severity": "LOW",
+        "issue_text": "Standard pseudo-random generators are not suitable for security/cryptographic purposes.",
+        "line_number": 35,
+        "line_range": [
+          35
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b311-random",
+        "test_id": "B311",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "40     expr = input(\"Enter python: \")\n41     return eval(expr)  # B307\n42 \n",
+        "col_offset": 11,
+        "end_col_offset": 21,
+        "filename": "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "MEDIUM",
+        "issue_text": "Use of possibly insecure function - consider using safer ast.literal_eval.",
+        "line_number": 41,
+        "line_range": [
+          41
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b307-eval",
+        "test_id": "B307",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "45     # Exec usage (B102)\n46     exec(code)  # B102\n47 \n",
+        "col_offset": 4,
+        "end_col_offset": 14,
+        "filename": "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "MEDIUM",
+        "issue_text": "Use of exec detected.",
+        "line_number": 46,
+        "line_range": [
+          46
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b102_exec_used.html",
+        "test_id": "B102",
+        "test_name": "exec_used"
+      },
+      {
+        "code": "51     data = base64.b64decode(user_supplied_b64)\n52     return pickle.loads(data)  # B301\n53 \n",
+        "col_offset": 11,
+        "end_col_offset": 29,
+        "filename": "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 502,
+          "link": "https://cwe.mitre.org/data/definitions/502.html"
+        },
+        "issue_severity": "MEDIUM",
+        "issue_text": "Pickle and modules that wrap it can be unsafe when used to deserialize untrusted data, possible security issue.",
+        "line_number": 52,
+        "line_range": [
+          52
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b301-pickle",
+        "test_id": "B301",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "56     # Command injection via shell (B605/B602/B603)\n57     os.system(\"cat \" + user_arg)                         # B605\n58     subprocess.call(\"ls -l \" + user_arg, shell=True)     # B602/B603\n",
+        "col_offset": 4,
+        "end_col_offset": 32,
+        "filename": "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "HIGH",
+        "issue_text": "Starting a process with a shell, possible injection detected, security issue.",
+        "line_number": 57,
+        "line_range": [
+          57
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b605_start_process_with_a_shell.html",
+        "test_id": "B605",
+        "test_name": "start_process_with_a_shell"
+      },
+      {
+        "code": "57     os.system(\"cat \" + user_arg)                         # B605\n58     subprocess.call(\"ls -l \" + user_arg, shell=True)     # B602/B603\n59 \n",
+        "col_offset": 4,
+        "end_col_offset": 52,
+        "filename": "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "HIGH",
+        "issue_text": "subprocess call with shell=True identified, security issue.",
+        "line_number": 58,
+        "line_range": [
+          58
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b602_subprocess_popen_with_shell_equals_true.html",
+        "test_id": "B602",
+        "test_name": "subprocess_popen_with_shell_equals_true"
+      },
+      {
+        "code": "62     # Insecure temp file usage (B306)\n63     name = tempfile.mktemp()  # B306\n64     with open(name, \"w\") as f:\n",
+        "col_offset": 11,
+        "end_col_offset": 28,
+        "filename": "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 377,
+          "link": "https://cwe.mitre.org/data/definitions/377.html"
+        },
+        "issue_severity": "MEDIUM",
+        "issue_text": "Use of insecure and deprecated function (mktemp).",
+        "line_number": 63,
+        "line_range": [
+          63
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b306-mktemp-q",
+        "test_id": "B306",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "70     # Unsafe YAML load (B506) — prefer yaml.safe_load\n71     return yaml.load(load_str, Loader=yaml.Loader)  # B506\n72 \n",
+        "col_offset": 11,
+        "end_col_offset": 50,
+        "filename": "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 20,
+          "link": "https://cwe.mitre.org/data/definitions/20.html"
+        },
+        "issue_severity": "MEDIUM",
+        "issue_text": "Use of unsafe yaml load. Allows instantiation of arbitrary objects. Consider yaml.safe_load().",
+        "line_number": 71,
+        "line_range": [
+          71
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b506_yaml_load.html",
+        "test_id": "B506",
+        "test_name": "yaml_load"
+      },
+      {
+        "code": "75     # Disable TLS verification (B501)\n76     return requests.get(url, verify=False)  # B501\n77 \n",
+        "col_offset": 11,
+        "end_col_offset": 42,
+        "filename": "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 295,
+          "link": "https://cwe.mitre.org/data/definitions/295.html"
+        },
+        "issue_severity": "HIGH",
+        "issue_text": "Call to requests with verify=False disabling SSL certificate checks, security issue.",
+        "line_number": 76,
+        "line_range": [
+          76
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b501_request_with_no_cert_validation.html",
+        "test_id": "B501",
+        "test_name": "request_with_no_cert_validation"
+      },
+      {
+        "code": "75     # Disable TLS verification (B501)\n76     return requests.get(url, verify=False)  # B501\n77 \n",
+        "col_offset": 11,
+        "end_col_offset": 42,
+        "filename": "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py",
+        "issue_confidence": "LOW",
+        "issue_cwe": {
+          "id": 400,
+          "link": "https://cwe.mitre.org/data/definitions/400.html"
+        },
+        "issue_severity": "MEDIUM",
+        "issue_text": "Call to requests without timeout",
+        "line_number": 76,
+        "line_range": [
+          76
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b113_request_without_timeout.html",
+        "test_id": "B113",
+        "test_name": "request_without_timeout"
+      },
+      {
+        "code": "80     # Insecure protocol (B401)\n81     t = telnetlib.Telnet(host)  # B401\n82     t.write(b\"GET /\\n\")\n",
+        "col_offset": 8,
+        "end_col_offset": 30,
+        "filename": "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 319,
+          "link": "https://cwe.mitre.org/data/definitions/319.html"
+        },
+        "issue_severity": "HIGH",
+        "issue_text": "Telnet-related functions are being called. Telnet is considered insecure. Use SSH or some other encrypted protocol.",
+        "line_number": 81,
+        "line_range": [
+          81
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.8.6/blacklists/blacklist_calls.html#b312-telnetlib",
+        "test_id": "B312",
+        "test_name": "blacklist"
+      },
+      {
+        "code": "88     client = paramiko.SSHClient()\n89     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())  # B507\n90     client.connect(host, username=user, password=password)\n",
+        "col_offset": 4,
+        "end_col_offset": 64,
+        "filename": "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 295,
+          "link": "https://cwe.mitre.org/data/definitions/295.html"
+        },
+        "issue_severity": "HIGH",
+        "issue_text": "Paramiko call with policy set to automatically trust the unknown host key.",
+        "line_number": 89,
+        "line_range": [
+          89
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b507_ssh_no_host_key_verification.html",
+        "test_id": "B507",
+        "test_name": "ssh_no_host_key_verification"
+      },
+      {
+        "code": "99     cmd = request.form.get(\"cmd\", \"echo hello\")\n100     out = subprocess.check_output(cmd, shell=True)  # B602\n101     return out\n",
+        "col_offset": 10,
+        "end_col_offset": 50,
+        "filename": "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py",
+        "issue_confidence": "HIGH",
+        "issue_cwe": {
+          "id": 78,
+          "link": "https://cwe.mitre.org/data/definitions/78.html"
+        },
+        "issue_severity": "HIGH",
+        "issue_text": "subprocess call with shell=True identified, security issue.",
+        "line_number": 100,
+        "line_range": [
+          100
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b602_subprocess_popen_with_shell_equals_true.html",
+        "test_id": "B602",
+        "test_name": "subprocess_popen_with_shell_equals_true"
+      },
+      {
+        "code": "105     # Flask debug mode (B201)\n106     app.run(host=\"0.0.0.0\", port=5000, debug=True)  # B201\n",
+        "col_offset": 4,
+        "end_col_offset": 50,
+        "filename": "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 94,
+          "link": "https://cwe.mitre.org/data/definitions/94.html"
+        },
+        "issue_severity": "HIGH",
+        "issue_text": "A Flask app appears to be run with debug=True, which exposes the Werkzeug debugger and allows the execution of arbitrary code.",
+        "line_number": 106,
+        "line_range": [
+          106
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b201_flask_debug_true.html",
+        "test_id": "B201",
+        "test_name": "flask_debug_true"
+      },
+      {
+        "code": "105     # Flask debug mode (B201)\n106     app.run(host=\"0.0.0.0\", port=5000, debug=True)  # B201\n",
+        "col_offset": 17,
+        "end_col_offset": 26,
+        "filename": "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py",
+        "issue_confidence": "MEDIUM",
+        "issue_cwe": {
+          "id": 605,
+          "link": "https://cwe.mitre.org/data/definitions/605.html"
+        },
+        "issue_severity": "MEDIUM",
+        "issue_text": "Possible binding to all interfaces.",
+        "line_number": 106,
+        "line_range": [
+          106
+        ],
+        "more_info": "https://bandit.readthedocs.io/en/1.8.6/plugins/b104_hardcoded_bind_all_interfaces.html",
+        "test_id": "B104",
+        "test_name": "hardcoded_bind_all_interfaces"
+      }
+    ]
+  },
+  "osv": {
+    "results": [
+      {
+        "package": "django",
+        "version": "1.11.29",
+        "vulnerabilities": [
+          {
+            "id": "GHSA-68w8-qjq3-2gfm",
+            "modified": "2024-09-20T15:46:52.557962Z"
+          },
+          {
+            "id": "GHSA-7xr5-9hcq-chf9",
+            "modified": "2025-06-10T20:12:40.998043Z"
+          },
+          {
+            "id": "GHSA-8x94-hmjh-97hq",
+            "modified": "2025-01-14T11:27:04.205746Z"
+          },
+          {
+            "id": "GHSA-rrqc-c2jx-6jgv",
+            "modified": "2024-10-30T19:23:59.139649Z"
+          },
+          {
+            "id": "PYSEC-2021-98",
+            "modified": "2023-12-06T01:01:16.755410Z"
+          }
+        ]
+      },
+      {
+        "package": "flask",
+        "version": "0.12",
+        "vulnerabilities": [
+          {
+            "id": "GHSA-562c-5r94-xh97",
+            "modified": "2025-02-21T05:29:40.872529Z"
+          },
+          {
+            "id": "GHSA-5wv5-4vpf-pj6m",
+            "modified": "2024-09-20T21:24:25.140560Z"
+          },
+          {
+            "id": "GHSA-m2qf-hxjv-5gpq",
+            "modified": "2025-02-21T05:42:17.337040Z"
+          },
+          {
+            "id": "PYSEC-2018-66",
+            "modified": "2023-11-08T03:59:39.887416Z"
+          },
+          {
+            "id": "PYSEC-2019-179",
+            "modified": "2023-11-08T04:00:40.602062Z"
+          },
+          {
+            "id": "PYSEC-2023-62",
+            "modified": "2023-11-08T04:12:28.231927Z"
+          }
+        ]
+      }
+    ]
+  }
+}

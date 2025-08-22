@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agents + MCP: Engineering Performance Amplification</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', system-ui, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #1d1d1f;
+            overflow: hidden;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .presentation-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 0;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            background: #ffffff;
+            padding: 4vh 6vw;
+            display: none;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        .slide h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 3vh;
+            background: linear-gradient(135deg, #007AFF, #34C759);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .slide h2 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 600;
+            margin-bottom: 3vh;
+            color: #1d1d1f;
+            text-align: center;
+            line-height: 1.2;
+            letter-spacing: -0.01em;
+        }
+
+        .slide h3 {
+            font-size: clamp(1.5rem, 3.5vw, 2rem);
+            font-weight: 600;
+            margin-bottom: 2vh;
+            color: #007AFF;
+            line-height: 1.3;
+            letter-spacing: -0.01em;
+            text-align: center;
+        }
+
+        .slide h4 {
+            font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+            font-weight: 600;
+            margin-bottom: 1vh;
+            color: #007AFF;
+            line-height: 1.3;
+            letter-spacing: -0.005em;
+        }
+
+        .slide p {
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            line-height: 1.5;
+            margin-bottom: 2vh;
+            color: #1d1d1f;
+            font-weight: 400;
+            max-width: 85vw;
+        }
+
+        .slide ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            max-width: 85vw;
+        }
+
+        .slide li {
+            font-size: clamp(0.95rem, 2vw, 1.2rem);
+            line-height: 1.4;
+            margin-bottom: 1.5vh;
+            position: relative;
+            padding-left: 2.5rem;
+            color: #1d1d1f;
+            font-weight: 400;
+        }
+
+        .slide li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #007AFF;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .subtitle {
+            font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+            text-align: center;
+            color: #86868b;
+            font-weight: 400;
+            margin-top: 2vh;
+            line-height: 1.4;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 2vh;
+            left: 2vw;
+            right: 2vw;
+            display: flex;
+            justify-content: space-between;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            color: #00D4AA;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-btn:active {
+            transform: translateY(0px);
+            transition: all 0.1s ease;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-counter {
+            position: fixed;
+            top: 4vh;
+            right: 4vw;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            padding: 12px 20px;
+            border-radius: 24px;
+            font-size: 1rem;
+            color: #86868b;
+            font-weight: 500;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .demo-box {
+            background: rgba(52, 199, 89, 0.08);
+            border: 1px solid rgba(52, 199, 89, 0.2);
+            border-radius: 16px;
+            padding: 2vh 3vw;
+            margin: 1.5vh 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            width: 100%;
+            max-width: 85vw;
+        }
+
+        .workflow-step {
+            background: rgba(0, 122, 255, 0.06);
+            border-left: 4px solid #007AFF;
+            padding: 1.5vh 3vw;
+            margin: 1vh 0;
+            border-radius: 0 12px 12px 0;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            width: 100%;
+            max-width: 85vw;
+        }
+
+        .problem-item {
+            background: rgba(255, 59, 48, 0.06);
+            border-left: 4px solid #FF3B30;
+            padding: 1.5vh 3vw;
+            margin: 1vh 0;
+            border-radius: 0 12px 12px 0;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            width: 100%;
+            max-width: 85vw;
+        }
+
+        .benefit-item {
+            background: rgba(52, 199, 89, 0.06);
+            border-left: 4px solid #34C759;
+            padding: 1.5vh 3vw;
+            margin: 1vh 0;
+            border-radius: 0 12px 12px 0;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            width: 100%;
+            max-width: 85vw;
+        }
+
+        .architecture-visual {
+            text-align: center;
+            margin: 2vh 0;
+            font-size: clamp(1.3rem, 3vw, 1.8rem);
+            color: #007AFF;
+            font-weight: 500;
+            padding: 2vh 0;
+            background: rgba(0, 122, 255, 0.04);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 85vw;
+        }
+
+        .diagram-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 3vh 0;
+            width: 100%;
+            max-width: 85vw;
+        }
+
+        .diagram-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 1vh 0;
+            width: 100%;
+            flex-wrap: wrap;
+            gap: 2vw;
+        }
+
+        .agent-box {
+            background: rgba(0, 122, 255, 0.1);
+            border: 2px solid #007AFF;
+            border-radius: 12px;
+            padding: 2vh 1.5vw;
+            text-align: center;
+            font-size: clamp(0.7rem, 1.6vw, 0.9rem);
+            font-weight: 600;
+            color: #007AFF;
+            min-width: 200px;
+            flex: 1;
+            max-width: 280px;
+            line-height: 1.3;
+        }
+
+        .coordinator-box {
+            background: rgba(52, 199, 89, 0.1);
+            border: 2px solid #34C759;
+            color: #34C759;
+            font-size: clamp(0.8rem, 1.8vw, 1rem);
+            min-width: 300px;
+            max-width: 400px;
+        }
+
+        .integration-box {
+            background: rgba(255, 149, 0, 0.1);
+            border: 2px solid #FF9500;
+            color: #FF9500;
+        }
+
+        .validation-box {
+            background: rgba(255, 59, 48, 0.1);
+            border: 2px solid #FF3B30;
+            color: #FF3B30;
+        }
+
+        .arrow-down {
+            font-size: 1.5rem;
+            color: #007AFF;
+            margin: 0.5vh 0;
+        }
+
+        .flow-arrows {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            color: #007AFF;
+            margin: 1vh 0;
+        }
+
+        .repo-labels {
+            display: flex;
+            justify-content: center;
+            gap: 1vw;
+            margin-top: 1vh;
+            flex-wrap: wrap;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #00D4AA, #34D399);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 600;
+        }
+
+        .phase-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 2vh 0;
+            width: 100%;
+            max-width: 85vw;
+        }
+
+        .phase-header {
+            background: rgba(52, 199, 89, 0.15);
+            border: 2px solid #34C759;
+            border-radius: 16px;
+            padding: 1vh 2vw;
+            margin-bottom: 1vh;
+            font-size: clamp(0.8rem, 1.8vw, 1rem);
+            font-weight: 600;
+            color: #34C759;
+            text-align: center;
+            min-width: 200px;
+        }
+
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1vw;
+            width: 100%;
+            margin-bottom: 1vh;
+        }
+
+        .mini-agent {
+            background: rgba(0, 122, 255, 0.1);
+            border: 1px solid #007AFF;
+            border-radius: 8px;
+            padding: 0.8vh 0.8vw;
+            text-align: center;
+            font-size: clamp(0.6rem, 1.4vw, 0.75rem);
+            color: #007AFF;
+            font-weight: 500;
+        }
+
+        .design-agent {
+            background: rgba(255, 149, 0, 0.1);
+            border-color: #FF9500;
+            color: #FF9500;
+        }
+
+        .impl-agent {
+            background: rgba(142, 68, 173, 0.1);
+            border-color: #8E44AD;
+            color: #8E44AD;
+        }
+
+        .migration-agent {
+            background: rgba(255, 59, 48, 0.1);
+            border-color: #FF3B30;
+            color: #FF3B30;
+        }
+
+        .phase-arrow {
+            font-size: 1.5rem;
+            color: #34C759;
+            margin: 1vh 0;
+        }
+
+        .timeline-label {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 0.5vh 1vw;
+            border-radius: 12px;
+            font-size: clamp(0.6rem, 1.3vw, 0.8rem);
+            color: #86868b;
+            margin-bottom: 1vh;
+            text-align: center;
+        }
+
+        .repo-label {
+            background: rgba(0, 0, 0, 0.05);
+            padding: 0.5vh 1vw;
+            border-radius: 8px;
+            font-size: clamp(0.7rem, 1.5vw, 0.9rem);
+            color: #86868b;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #FF9500, #FF3B30);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 600;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 3vh 4vw;
+                padding-bottom: 8vh; /* Extra bottom padding for navigation */
+            }
+
+            .slide:not(:first-of-type) {
+                padding-top: 4vh;
+            }
+            
+            .navigation {
+                bottom: 1vh;
+                left: 1vw;
+                right: 1vw;
+            }
+            
+            .nav-btn {
+                padding: 10px 16px;
+                border-radius: 10px;
+                font-size: 0.8rem;
+            }
+
+            .demo-box, .workflow-step, .problem-item, .benefit-item {
+                padding: 1.5vh 4vw;
+                margin: 1vh 0;
+                max-width: 92vw;
+            }
+
+            .slide li {
+                padding-left: 2rem;
+            }
+
+            .slide ul {
+                max-width: 92vw;
+            }
+
+            .slide p {
+                max-width: 92vw;
+            }
+
+            .architecture-visual {
+                max-width: 92vw;
+            }
+        }
+
+        /* Content organization */
+        .slide:first-of-type {
+            text-align: center;
+            justify-content: center;
+        }
+
+        .slide:not(:first-of-type) {
+            text-align: left;
+            justify-content: flex-start;
+            padding-top: 6vh;
+        }
+
+        .slide:not(:first-of-type) h2,
+        .slide:not(:first-of-type) h3 {
+            text-align: center;
+        }
+
+        /* Clean scrollbar styling */
+        .slide::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .slide::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 3px;
+        }
+
+        .slide::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 3px;
+        }
+
+        .slide::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">15</span>
+        </div>
+
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1>AI Agents + MCP</h1>
+            <p class="subtitle">Engineering Performance Amplification</p>
+            <p class="subtitle" style="margin-top: 4vh; font-size: clamp(1rem, 2vw, 1.2rem);">Turning Senior Engineer Expertise into Scalable Workflows</p>
+            <p class="subtitle" style="margin-top: 6vh; font-size: clamp(0.9rem, 1.8vw, 1rem); color: #60a5fa;">MLP Team Presentation</p>
+        </div>
+
+        <!-- Slide 2: Context & Problem -->
+        <div class="slide">
+            <h2>The Cognitive Overhead Problem</h2>
+            <div class="problem-item">
+                <h3>Context Switching is Killing Our Velocity</h3>
+                <p>Between docs, code, constraints, and tribal knowledge - we spend more time gathering context than solving problems</p>
+            </div>
+            <div class="problem-item">
+                <h3>Mental Load of Complex Systems</h3>
+                <p>Maintaining consistency across ML platform architecture decisions requires keeping massive amounts of information in working memory</p>
+            </div>
+            <div class="problem-item">
+                <h3>Information Gathering vs Problem Solving</h3>
+                <p>Senior engineers are spending 60%+ of their time on context reconstruction rather than engineering</p>
+            </div>
+        </div>
+
+        <!-- Slide 3: Performance Bottlenecks -->
+        <div class="slide">
+            <h2>The Performance Bottlenecks We Face</h2>
+            <ul>
+                <li><span class="highlight">Context fragmentation:</span> Architecture docs, code, constraints, and tribal knowledge scattered across systems</li>
+                <li><span class="highlight">Mental overhead:</span> Maintaining consistency across complex ML platform components</li>
+                <li><span class="highlight">Time allocation:</span> 60% gathering context, 40% actually solving problems</li>
+                <li><span class="highlight">Knowledge gaps:</span> What we've tried so far (Copilot, ChatGPT) lacks our system context</li>
+                <li><span class="highlight">Iteration cycles:</span> Each design change requires full context reconstruction</li>
+            </ul>
+            <p style="margin-top: 4vh; text-align: center; font-style: italic; color: #00D4AA;">We need tools that understand our systems, not just generic programming patterns.</p>
+        </div>
+
+        <!-- Slide 4: Solution Overview -->
+        <div class="slide">
+            <h2>Agents + MCP: Your Context, Amplified</h2>
+            <h3>Simple Concept</h3>
+            <p>Give AI agents access to the same tools and data sources you use daily</p>
+            
+            <div class="architecture-visual">
+                <p>🤖 Agent ↔ 📊 Your PDFs ↔ 💾 Your Code ↔ 🔧 Your Tools</p>
+            </div>
+
+            <div class="workflow-step">
+                <h4>Think of it as:</h4>
+                <p>"Pair programming with a senior engineer who never forgets context and can access all your systems simultaneously"</p>
+            </div>
+
+            <ul>
+                <li>MCP (Model Context Protocol) connects agents to your internal tools</li>
+                <li>Agents maintain context across complex, multi-step workflows</li>
+                <li>Same engineering judgment, faster iteration cycles</li>
+            </ul>
+        </div>
+
+        <!-- Slide 5: Cognitive Process Decomposition -->
+        <div class="slide">
+            <h2>Engineering Cognition: Process Decomposition</h2>
+            <h3>What Actually Happens in Complex Engineering Work?</h3>
+            
+            <div class="workflow-step">
+                <h4>1. Context Assembly & Situational Awareness</h4>
+                <p>Gathering scattered information, building mental model of current system state, constraints, and requirements</p>
+                <p><strong>Current Tools:</strong> ADRs, Confluence, service catalogs, dependency maps, architecture diagrams</p>
+            </div>
+            
+            <div class="workflow-step">
+                <h4>2. Pattern Recognition & Constraint Evaluation</h4>
+                <p>Identifying applicable architectural patterns, evaluating technical/business constraints, recognizing similar problems</p>
+                <p><strong>Current Tools:</strong> Linting tools, style guides, design pattern libraries, reference implementations</p>
+            </div>
+            
+            <div class="workflow-step">
+                <h4>3. Solution Space Exploration</h4>
+                <p>Generating alternatives, evaluating trade-offs, considering edge cases and failure modes</p>
+                <p><strong>Current Tools:</strong> Design reviews, proof of concepts, decision matrices, feature flags</p>
+            </div>
+            
+            <div class="workflow-step">
+                <h4>4. Implementation Planning & Execution</h4>
+                <p>Breaking down solution into actionable steps, considering integration points, execution</p>
+                <p><strong>Current Tools:</strong> Task breakdown, CI/CD pipelines, modular architectures, technical specs</p>
+            </div>
+            
+            <div class="workflow-step">
+                <h4>5. Validation & Knowledge Synthesis</h4>
+                <p>Testing assumptions, documenting decisions, updating team knowledge base</p>
+                <p><strong>Current Tools:</strong> Testing frameworks, monitoring systems, post-mortems, knowledge sharing sessions</p>
+            </div>
+        </div>
+
+        <!-- Slide 6: Cognitive Load Analysis -->
+        <div class="slide">
+            <h2>Cognitive Load Distribution</h2>
+            <h3>Where Do We Spend Our Mental Energy?</h3>
+            
+            <div class="problem-item">
+                <h4>Context Assembly: ~40% of cognitive load</h4>
+                <p>• Reading docs, code, previous decisions<br>
+                • Reconstructing system understanding<br>
+                • Cross-referencing constraints and requirements</p>
+            </div>
+            
+            <div class="problem-item">
+                <h4>Pattern Recognition: ~25% of cognitive load</h4>
+                <p>• Matching current problem to known solutions<br>
+                • Evaluating architectural fit<br>
+                • Considering team conventions and standards</p>
+            </div>
+            
+            <div class="benefit-item">
+                <h4>Creative Problem Solving: ~20% of cognitive load</h4>
+                <p>• Novel solution generation<br>
+                • Complex trade-off evaluation<br>
+                • System design innovation</p>
+            </div>
+            
+            <div class="demo-box">
+                <h4>The Insight</h4>
+                <p><span class="highlight">65% of our cognitive load</span> is spent on information processing that could be augmented, leaving more capacity for the creative, high-value engineering work.</p>
+            </div>
+        </div>
+
+        <!-- Slide 7: Tool Mapping & Information Flow -->
+        <div class="slide">
+            <h2>Cognitive Process → Tool Mapping</h2>
+            <h3>How Each Mental Process Maps to Data Sources</h3>
+            
+            <div class="workflow-step">
+                <h4>Context Assembly</h4>
+                <p><strong>Tools:</strong> Confluence pages, GitHub README/docs, Jira tickets, Slack threads, ADR repositories, OpenAPI specs, Terraform configs, service dependency graphs (Jaeger, DataDog), runbooks</p>
+                <p><strong>Agent Capability:</strong> Parse all simultaneously, cross-reference constraints, build unified context graph</p>
+            </div>
+            
+            <div class="workflow-step">
+                <h4>Pattern Recognition</h4>
+                <p><strong>Tools:</strong> GitHub repositories, internal libraries, Helm charts, Docker configs, linting rules (.eslintrc, mypy configs), code review comments, design pattern wikis, tech debt tracking</p>
+                <p><strong>Agent Capability:</strong> Analyze patterns across 100+ repos, detect anti-patterns, suggest consistent implementations</p>
+            </div>
+            
+            <div class="workflow-step">
+                <h4>Solution Exploration</h4>
+                <p><strong>Tools:</strong> Performance dashboards (Grafana, DataDog), load testing results, A/B testing platforms, feature flag systems, cost analysis tools (AWS Cost Explorer), SLA monitoring</p>
+                <p><strong>Agent Capability:</strong> Generate alternatives based on performance constraints, cost models, and reliability requirements</p>
+            </div>
+            
+            <div class="workflow-step">
+                <h4>Implementation Planning</h4>
+                <p><strong>Tools:</strong> CI/CD pipelines (Jenkins, GitHub Actions), deployment configs, infrastructure as code, monitoring setup, alerting rules, rollback procedures</p>
+                <p><strong>Agent Capability:</strong> Auto-generate deployment plans, integration tests, monitoring configs, and rollback strategies</p>
+            </div>
+            
+            <div class="demo-box">
+                <h4>MCP Enables</h4>
+                <p>Agents access <span class="highlight">your actual production systems</span> - not just generic programming knowledge, but your specific configs, patterns, constraints, and operational data.</p>
+            </div>
+        </div>
+
+        <!-- Slide 8: Augmentation vs Replacement -->
+        <div class="slide">
+            <h2>Augmentation Strategy: What We Automate vs Amplify</h2>
+            
+            <div class="benefit-item">
+                <h4>Automate: Information Processing Tasks</h4>
+                <p>• Document parsing and cross-referencing<br>
+                • Constraint checking and validation<br>
+                • Pattern matching and consistency verification<br>
+                • Routine code generation and scaffolding</p>
+            </div>
+            
+            <div class="demo-box">
+                <h4>Amplify: Engineering Judgment</h4>
+                <p>• Complex trade-off evaluation<br>
+                • System design decisions<br>
+                • Risk assessment and mitigation strategies<br>
+                • Team coordination and communication</p>
+            </div>
+            
+            <div class="problem-item">
+                <h4>Human-Only: Strategic & Creative Work</h4>
+                <p>• Business requirement interpretation<br>
+                • Novel solution innovation<br>
+                • Cross-functional collaboration<br>
+                • Long-term architectural vision</p>
+            </div>
+            
+            <p style="margin-top: 3vh; text-align: center; font-size: clamp(1rem, 2.5vw, 1.4rem); color: #00D4AA;">
+                Goal: Free up 65% of cognitive load for high-value engineering work
+            </p>
+        </div>
+
+        <!-- Slide 9: Use Case 1 -->
+        <div class="slide">
+            <h2>Use Case 1: Complex Context Decomposition & Design</h2>
+            <div class="demo-box">
+                <h4>Demo Scenario</h4>
+                <p>New ML feature across multiple services with existing architectural constraints</p>
+            </div>
+            
+            <div class="workflow-step">
+                <h4>Agent Workflow:</h4>
+                <p>📄 Consumes architecture PDFs + 💻 existing code + 📋 new requirements → 🎯 generates design options</p>
+            </div>
+
+            <div class="workflow-step">
+                <h4>Cognitive Process Mapping:</h4>
+                <p><strong>Context Assembly:</strong> Automated parallel processing of all documentation<br>
+                <strong>Pattern Recognition:</strong> Automated identification of applicable patterns<br>
+                <strong>Solution Exploration:</strong> Augmented - generates multiple options for human evaluation</p>
+            </div>
+
+            <ul>
+                <li><span class="highlight">Speed of iteration:</span> Multiple design alternatives in minutes, not hours</li>
+                <li><span class="highlight">Consistency maintenance:</span> Automatically aligns with established patterns</li>
+                <li><span class="highlight">Constraint awareness:</span> Considers all documented limitations and requirements</li>
+                <li><span class="highlight">Architectural coherence:</span> Maintains system design principles across services</li>
+            </ul>
+
+            <p style="margin-top: 3vh; text-align: center; color: #34d399; font-weight: 600;">Cognitive Load Reduction: ~80% on context assembly + pattern recognition</p>
+        </div>
+
+        <!-- Slide 10: Use Case 2 -->
+        <div class="slide">
+            <h2>Use Case 2: Context-Preserving Implementation</h2>
+            <div class="demo-box">
+                <h4>Demo Scenario</h4>
+                <p>Agent already "knows" the design decisions from previous step - no context re-establishment needed</p>
+            </div>
+
+            <div class="workflow-step">
+                <h4>Agent Workflow:</h4>
+                <p>🎯 Design context + 🏗️ implementation plan → 💻 code scaffolds that fit your patterns</p>
+            </div>
+
+            <div class="workflow-step">
+                <h4>Cognitive Process Mapping:</h4>
+                <p><strong>Context Assembly:</strong> Zero - agent retains full context from design phase<br>
+                <strong>Pattern Recognition:</strong> Automated - matches established code patterns<br>
+                <strong>Implementation Planning:</strong> Augmented - generates detailed execution plan</p>
+            </div>
+
+            <ul>
+                <li><span class="highlight">Zero context loss:</span> Design decisions flow directly into implementation</li>
+                <li><span class="highlight">Pattern consistency:</span> Generated code follows your team's established conventions</li>
+                <li><span class="highlight">Architectural alignment:</span> Implementation matches the design constraints</li>
+                <li><span class="highlight">Faster feedback loops:</span> Code → review → iterate without context reconstruction</li>
+            </ul>
+
+            <p style="margin-top: 3vh; text-align: center; color: #34d399; font-weight: 600;">Cognitive Load Reduction: ~70% on context assembly + pattern matching</p>
+        </div>
+
+        <!-- Slide 11: Use Case 3 -->
+        <div class="slide">
+            <h2>Use Case 3: Codifying Senior Engineer Workflows</h2>
+            <div class="demo-box">
+                <h4>Demo Scenario: Security Patch Workflow Automation</h4>
+                <p>Turn the process a senior engineer would follow into a repeatable, auditable workflow</p>
+            </div>
+
+            <div class="workflow-step">
+                <h4>Automated Workflow:</h4>
+                <p>🔍 Dependency scan → 📊 impact analysis → 🛠️ targeted patches → 🔄 PR creation</p>
+            </div>
+
+            <div class="workflow-step">
+                <h4>Cognitive Process Automation:</h4>
+                <p><strong>Context Assembly:</strong> Automated vulnerability + impact data gathering<br>
+                <strong>Pattern Recognition:</strong> Automated patch pattern selection<br>
+                <strong>Solution Exploration:</strong> Automated risk/benefit analysis<br>
+                <strong>Implementation:</strong> Automated patch generation + testing</p>
+            </div>
+
+            <ul>
+                <li><span class="highlight">Expertise codification:</span> Senior engineer decision-making becomes repeatable process</li>
+                <li><span class="highlight">Consistency at scale:</span> Same quality decisions across all repositories</li>
+                <li><span class="highlight">Audit trail:</span> Every decision and action is documented and traceable</li>
+                <li><span class="highlight">Time liberation:</span> Senior engineers focus on complex problems, not routine maintenance</li>
+            </ul>
+
+            <p style="margin-top: 3vh; text-align: center; color: #34d399; font-weight: 600;">Cognitive Load Reduction: ~90% on routine security maintenance</p>
+        </div>
+
+        <!-- Slide 12: Complex Research Workflows -->
+        <div class="slide">
+            <h2>Scaling to Complex Research Workflows</h2>
+            <h3>Multi-Phase Agent Orchestration for Enterprise-Scale Problems</h3>
+            
+            <div class="demo-box">
+                <h4>Complex Scenario: Cross-Service Migration Strategy</h4>
+                <p>Migrate ML inference pipeline from monolithic service to microservices across 15 repos, 200+ dependencies, performance constraints, zero-downtime requirement</p>
+            </div>
+            
+            <div class="phase-container">
+                <!-- Phase 1 -->
+                <div class="phase-header">📊 Phase 1: Discovery & Analysis</div>
+                <div class="timeline-label">Week 1-2 | 7 Agents</div>
+                <div class="agent-grid">
+                    <div class="mini-agent">🎯 Coordinator</div>
+                    <div class="mini-agent">🔍 Dep Mapper</div>
+                    <div class="mini-agent">⚡ Perf Profiler</div>
+                    <div class="mini-agent">⚠️ Risk Assessor</div>
+                    <div class="mini-agent">🏗️ Arch Analyzer</div>
+                    <div class="mini-agent">🔗 Service Boundary</div>
+                    <div class="mini-agent">📋 Requirements</div>
+                </div>
+                <div class="phase-arrow">↓</div>
+                
+                <!-- Phase 2 -->
+                <div class="phase-header">🎨 Phase 2: Planning & Design</div>
+                <div class="timeline-label">Week 3-4 | 7 Agents</div>
+                <div class="agent-grid">
+                    <div class="mini-agent design-agent">🔌 API Designer</div>
+                    <div class="mini-agent design-agent">📊 Data Migrator</div>
+                    <div class="mini-agent design-agent">🚀 Deploy Planner</div>
+                    <div class="mini-agent design-agent">🏛️ Service Arch</div>
+                    <div class="mini-agent">✅ Perf Validator</div>
+                    <div class="mini-agent">🔒 Security Audit</div>
+                    <div class="mini-agent">🔄 Rollback Plan</div>
+                </div>
+                <div class="phase-arrow">↓</div>
+                
+                <!-- Phase 3 -->
+                <div class="phase-header">⚙️ Phase 3: Implementation</div>
+                <div class="timeline-label">Month 2-3 | 15 Agents</div>
+                <div class="agent-grid">
+                    <div class="mini-agent impl-agent">🔧 Code Transform</div>
+                    <div class="mini-agent impl-agent">🔧 Service Extract</div>
+                    <div class="mini-agent impl-agent">🔧 API Generator</div>
+                    <div class="mini-agent impl-agent">🔧 Test Creator</div>
+                    <div class="mini-agent impl-agent">🔧 Interface Builder</div>
+                    <div class="mini-agent impl-agent">🔧 Data Adapter</div>
+                    <div class="mini-agent impl-agent">🔧 Config Manager</div>
+                    <div class="mini-agent impl-agent">🔧 Schema Migrator</div>
+                    <div class="mini-agent">🐳 Container Setup</div>
+                    <div class="mini-agent">🔄 CI/CD Builder</div>
+                    <div class="mini-agent">📊 Monitor Setup</div>
+                    <div class="mini-agent">🧪 E2E Tester</div>
+                    <div class="mini-agent">🧪 Perf Tester</div>
+                    <div class="mini-agent">🧪 Load Tester</div>
+                    <div class="mini-agent">🧪 Chaos Tester</div>
+                </div>
+                <div class="phase-arrow">↓</div>
+                
+                <!-- Phase 4 -->
+                <div class="phase-header">🚀 Phase 4: Migration & Validation</div>
+                <div class="timeline-label">Month 4 | 8 Agents</div>
+                <div class="agent-grid">
+                    <div class="mini-agent migration-agent">🚦 Traffic Shifter</div>
+                    <div class="mini-agent migration-agent">📊 Data Sync</div>
+                    <div class="mini-agent migration-agent">❤️ Health Monitor</div>
+                    <div class="mini-agent migration-agent">🔄 Canary Manager</div>
+                    <div class="mini-agent migration-agent">📈 Metric Tracker</div>
+                    <div class="mini-agent">🚨 Safety Monitor</div>
+                    <div class="mini-agent">🔙 Rollback Trigger</div>
+                    <div class="mini-agent">📚 Runbook Gen</div>
+                </div>
+            </div>
+            
+            <div class="benefit-item">
+                <h4>Reality Check: ~37 Specialized Agents, 4-Month Timeline</h4>
+                <p>• <strong>Human oversight:</strong> Weekly reviews, go/no-go decisions at each phase • <strong>Incremental validation:</strong> Each phase must pass before proceeding • <strong>Rollback capability:</strong> Any phase can trigger rollback to previous state • <strong>Risk mitigation:</strong> Gradual rollout with canary deployments</p>
+            </div>
+            
+            <div class="demo-box">
+                <h4>Why Show This Complexity?</h4>
+                <p><strong>Not to intimidate,</strong> but to demonstrate systematic problem decomposition. This reveals:</p>
+                <p>• <span class="highlight">What we actually do:</span> The 37 agent types mirror the cognitive tasks we already perform daily<br>
+                • <span class="highlight">Process awareness:</span> Making explicit the mental workflows we maintain implicitly<br>
+                • <span class="highlight">Practical starting points:</span> Pick 2-3 agent types that match your current pain points<br>
+                • <span class="highlight">Feasible implementation:</span> Start with "Dependency Mapper" or "Config Manager" - not the full system</p>
+                <p><strong>Goal:</strong> Understand your own engineering processes better, then selectively automate the most painful parts.</p>
+            </div>
+        </div>
+
+        <!-- Slide 13: Operational Realities -->
+        <div class="slide">
+            <h2>Operational Realities</h2>
+            <h3>Quality Control, Debugging & Team Adoption</h3>
+            
+            <div class="problem-item">
+                <h4>Quality Control & Validation</h4>
+                <p>• <strong>Code review gates:</strong> Agent output goes through same PR review process as human code<br>
+                • <strong>Automated validation:</strong> Linting, testing, security scanning before any deployment<br>
+                • <strong>Staged rollout:</strong> Dev → staging → canary → production with validation at each step<br>
+                • <strong>Confidence thresholds:</strong> Low-confidence outputs automatically flagged for human review</p>
+            </div>
+            
+            <div class="workflow-step">
+                <h4>Failure Modes & Debugging</h4>
+                <p>• <strong>Agent logging:</strong> Full trace of decisions, tools accessed, reasoning chains<br>
+                • <strong>Replay capability:</strong> Re-run failed workflows with different parameters<br>
+                • <strong>Breakpoint debugging:</strong> Pause multi-agent workflows at any step for inspection<br>
+                • <strong>Fallback strategies:</strong> When agents fail, clear escalation to human engineers</p>
+            </div>
+            
+            <div class="benefit-item">
+                <h4>Team Adoption & Change Management</h4>
+                <p>• <strong>Start with volunteers:</strong> Find 2-3 engineers excited about automation, let them demonstrate value<br>
+                • <strong>Show, don't tell:</strong> Concrete examples of time saved, not theoretical benefits<br>
+                • <strong>Gradual adoption:</strong> Begin with low-stakes tasks (documentation, scaffolding) to build trust<br>
+                • <strong>Address skepticism:</strong> Acknowledge limitations openly, show how human oversight works</p>
+            </div>
+            
+            <div class="demo-box">
+                <h4>Building Trust Through Transparency</h4>
+                <p><strong>Success criteria:</strong> "I can understand what the agent did and why"<br>
+                <strong>Adoption pattern:</strong> Curiosity → Experimentation → Selective usage → Workflow integration<br>
+                <strong>Timeline:</strong> Expect 3-6 months from introduction to natural team adoption</p>
+            </div>
+        </div>
+
+        <!-- Slide 14: Limitations & Boundaries -->
+        <div class="slide">
+            <h2>Limitations & Boundaries</h2>
+            <h3>Where This Approach Breaks Down - And Why</h3>
+            
+            <div class="problem-item">
+                <h4>Agent Limitations</h4>
+                <p>• <strong>Novel problem domains:</strong> Limited effectiveness when no patterns exist<br>
+                <em>Why:</em> Agents excel at pattern matching and synthesis but struggle with true innovation requiring domain breakthroughs</p>
+                <p>• <strong>Complex stakeholder dynamics:</strong> Cannot navigate political/organizational complexity<br>
+                <em>Why:</em> Lacks emotional intelligence, context about interpersonal relationships, and understanding of unwritten organizational rules</p>
+                <p>• <strong>Ambiguous requirements:</strong> Requires well-defined inputs and constraints<br>
+                <em>Why:</em> Cannot disambiguate through conversation, lacks intuition about what stakeholders "really mean"</p>
+            </div>
+            
+            <div class="problem-item">
+                <h4>Context Window Constraints</h4>
+                <p>• <strong>Massive codebases:</strong> Cannot process entire enterprise systems simultaneously<br>
+                <em>Why:</em> Technical token limits (~200K tokens = ~150K words) vs. enterprise codebases (millions of lines)</p>
+                <p>• <strong>Long-term context:</strong> May lose context across very long workflows<br>
+                <em>Why:</em> Attention mechanisms degrade over long sequences, no persistent memory between sessions</p>
+                <p>• <strong>Real-time data:</strong> Limited access to live system state and metrics<br>
+                <em>Why:</em> Snapshot-based analysis vs. streaming data, latency between tool calls and system state changes</p>
+            </div>
+            
+            <div class="demo-box">
+                <h4>Human Judgment Still Required For</h4>
+                <p>• <strong>Strategic architectural decisions:</strong> Require understanding of 5-10 year business evolution, market dynamics<br>
+                • <strong>Trade-offs involving user experience:</strong> Require empathy, user psychology understanding<br>
+                • <strong>Cross-team coordination:</strong> Requires relationship management, influence without authority<br>
+                • <strong>Complex distributed failures:</strong> Require intuition about system behavior, creative debugging approaches</p>
+            </div>
+            
+            <div class="benefit-item">
+                <h4>Risk Mitigation - Based on Failure Modes</h4>
+                <p>• <strong>Start with low-risk tasks:</strong> Documentation, scaffolding are reversible; avoid critical path decisions<br>
+                • <strong>Human oversight:</strong> Agent suggestions need validation by engineers who understand business context<br>
+                • <strong>Validation at each step:</strong> Prevent compounding errors from propagating through workflow</p>
+            </div>
+        </div>
+
+        <!-- Slide 15: Performance Gains & Next Steps -->
+        <div class="slide">
+            <h2>Performance Gains & Getting Started</h2>
+            
+            <div class="benefit-item">
+                <h3>Measuring Success</h3>
+                <p><span class="highlight">Cognitive load reduction:</span> Time spent on context gathering vs. problem solving</p>
+                <p><span class="highlight">Iteration speed:</span> Design → code → review cycle time</p>
+                <p><span class="highlight">Consistency metrics:</span> Adherence to architectural patterns and standards</p>
+            </div>
+
+            <div class="workflow-step">
+                <h4>Low-Risk Pilot Approach</h4>
+                <p>Start with documentation-heavy tasks: architecture reviews, design validation, constraint checking</p>
+            </div>
+
+            <ul>
+                <li><span class="highlight">Week 1-2:</span> Set up MCP connections to key documentation and repositories</li>
+                <li><span class="highlight">Week 3-4:</span> Pilot design assistance workflows with 2-3 engineers</li>
+                <li><span class="highlight">Month 2:</span> Expand to implementation assistance and routine automation</li>
+                <li><span class="highlight">Month 3:</span> Measure and scale successful patterns across team</li>
+            </ul>
+
+            <p style="margin-top: 4vh; text-align: center; font-size: clamp(1rem, 2.5vw, 1.4rem); color: #00D4AA;">ROI: Same engineering judgment, dramatically faster cycles</p>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" id="prev-btn" onclick="previousSlide()">← Previous</button>
+        <button class="nav-btn" id="next-btn" onclick="nextSlide()">Next →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = totalSlides;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = n;
+            if (currentSlide >= totalSlides) currentSlide = 0;
+            if (currentSlide < 0) currentSlide = totalSlides - 1;
+            slides[currentSlide].classList.add('active');
+            
+            document.getElementById('current-slide').textContent = currentSlide + 1;
+            
+            // Update navigation buttons
+            document.getElementById('prev-btn').disabled = currentSlide === 0;
+            document.getElementById('next-btn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                showSlide(currentSlide + 1);
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                previousSlide();
+            }
+        });
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>
