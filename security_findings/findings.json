@@ -82,8 +82,8 @@
                   "0.12.3"
                 ],
                 "aliases": [
-                  "GHSA-562c-5r94-xh97",
-                  "CVE-2018-1000656"
+                  "CVE-2018-1000656",
+                  "GHSA-562c-5r94-xh97"
                 ],
                 "description": "The Pallets Project flask version Before 0.12.3 contains a CWE-20: Improper Input Validation vulnerability in flask that can result in Large amount of memory usage possibly leading to denial of service. This attack appear to be exploitable via Attacker provides JSON data in incorrect encoding. This vulnerability appears to have been fixed in 0.12.3. NOTE: this may overlap CVE-2019-1010083."
               },
@@ -94,8 +94,8 @@
                   "2.3.2"
                 ],
                 "aliases": [
-                  "GHSA-m2qf-hxjv-5gpq",
-                  "CVE-2023-30861"
+                  "CVE-2023-30861",
+                  "GHSA-m2qf-hxjv-5gpq"
                 ],
                 "description": "Flask is a lightweight WSGI web application framework. When all of the following conditions are met, a response containing data intended for one client may be cached and subsequently sent by the proxy to other clients. If the proxy also caches `Set-Cookie` headers, it may send one client's `session` cookie to other clients. The severity depends on the application's use of the session and the proxy's behavior regarding cookies. The risk depends on all these conditions being met.  1. The application must be hosted behind a caching proxy that does not strip cookies or ignore responses with cookies. 2. The application sets `session.permanent = True` 3. The application does not access or modify the session at any point during a request. 4. `SESSION_REFRESH_EACH_REQUEST` enabled (the default). 5. The application does not set a `Cache-Control` header to indicate that a page is private or should not be cached.  This happens because vulnerable versions of Flask only set the `Vary: Cookie` header when the session is accessed or modified, not when it is refreshed (re-sent to update the expiration) without being accessed or modified. This issue has been fixed in versions 2.3.2 and 2.2.5."
               }
@@ -138,7 +138,7 @@
   ],
   "bandit": {
     "errors": [],
-    "generated_at": "2025-08-22T03:58:45Z",
+    "generated_at": "2025-08-22T04:03:23Z",
     "metrics": {
       "/Users/xperiall/Work/Knowledge sharings/agents_knowledge_sharing/agent_test/file_with_sec_violations.py": {
         "CONFIDENCE.HIGH": 16,
