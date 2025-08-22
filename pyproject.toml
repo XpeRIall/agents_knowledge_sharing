@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "security-agent"
+version = "0.1.0"
+description = "Security auditing agent built with openai-agents"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "openai-agents",
+    "pip-audit",
+    "bandit",
+    "requests",
+]
+
+[project.scripts]
+security-agent = "security_agent:main"

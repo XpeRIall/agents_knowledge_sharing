@@ -1,0 +1,4 @@
+openai-agents
+pip-audit
+bandit
+requests
